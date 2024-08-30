@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EjercicioObligatorio3;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,7 +13,8 @@ namespace EjercicioObilagotorio3
 {
     public class EstacionMeteorologica
     {
-        private RegistroTemperatura[,] temperaturas;     //Matriz para guardar las temperaturas del mes
+        //Properties
+        public RegistroTemperatura[,] temperaturas { get; set; }     //Matriz para guardar las temperaturas del mes
 
         private int PersonaAnterior;                     //Valor que sera ocupado para elegir la persona de turno aleatoriamente
 
@@ -28,20 +31,35 @@ namespace EjercicioObilagotorio3
             return new RegistroTemperatura(empleados, personaAnterior);
         }
 
+        public void VerRegistro()           //devuelve el dia, temperatura, turno y persona de turno
+        {
+            Console.Clear();
+            foreach (var registro in temperaturas)
+            {
+                Console.WriteLine($"Dia : {registro.DiaDeRegistro}, temperatura: {registro.TemperaturaRegistrada},  turno: {registro.TurnoDeRegistro},   persona de turno: {registro.PersonaDeTurno.Name}");
+                
+                if (registro.DiaDeRegistro == 31)       //Restringe a que siga leyendo en la matriz, dado que no tiene mas registros guardados
+                {
+                    break;
+                }
+            }
+            Console.ReadKey();
+        }
+
         public void VerTemperaturas()
         {
-            //devuelve solo las temperaturas
+            Console.Clear();
             for (int i = 0; i < 5; i++)
             {
                 for (int j = 0; j < 7; j++)
                 {
-                    if (i == 4 && j > 2)        //Restringe que se guarden valores fueras del mes, a pesar de que ya sean valores igual a 0
+                    if (i == 4 && j > 2)        //Restringe a que siga leyendo en la matriz, dado que no tiene mas registros guardados
                     {
                         break;
                     }
                     else
                     {
-                        Console.Write($"{ temperaturas[i, j].TemperaturaRegistrada} ");     //Llama al constructor de temperatura para que lo genere
+                        Console.Write($"{temperaturas[i, j].TemperaturaRegistrada} ");
                     }
                 }
                 Console.WriteLine();
@@ -49,29 +67,18 @@ namespace EjercicioObilagotorio3
             Console.ReadKey();
         }
 
-        public void VerLosTurnosDeEmpleados()
+        public void VerTemperaturaDiaEspecifico(int dia)
         {
-            //devuelve solo las temperaturas
-            for (int i = 0; i < 5; i++)
+            Console.Clear();
+            if (dia < 1 | dia > 31)
+                throw new ArgumentException("El dia debe ser entre 1 a 31");
+            else
             {
-                for (int j = 0; j < 7; j++)
-                {
-                    if (i == 4 && j > 2)        //Restringe que se guarden valores fueras del mes, a pesar de que ya sean valores igual a 0
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        Console.Write($"{temperaturas[i, j].PersonaDeTurno.Name} ");     //Llama al constructor de temperatura para que lo genere
-                    }
-                }
-                Console.WriteLine();
+                int semana = dia / 7;
+                dia = dia % 7 - 1;
+                Console.WriteLine(temperaturas[semana, dia].TemperaturaRegistrada);
             }
             Console.ReadKey();
-        }
-
-        public void CargaManual()
-        {
         }
 
         public void CargaAutomatica(Empleados empleados)
@@ -87,6 +94,7 @@ namespace EjercicioObilagotorio3
                     else
                     {
                         temperaturas[i, j] = RegistrarTemperatura(empleados, PersonaAnterior);     //Llama al constructor de temperatura para que lo genere
+                        temperaturas[i, j].DiaDeRegistro = i * 7 + j + 1;               //Guardamos el dia en el que se registro
                         PersonaAnterior = temperaturas[i, j].EmpleadoActual;
                     }
                 }

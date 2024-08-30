@@ -26,11 +26,11 @@ namespace EjercicioObilagotorio3
             set { _personaDeTurno = value; }
         }
 
-        private DateOnly? _fechaDeRegistro;
-        public DateOnly? FechaDeRegistro
+        private int _diaDeRegistro;
+        public int DiaDeRegistro
         {
-            get { return _fechaDeRegistro; }
-            set { _fechaDeRegistro = value; }
+            get { return _diaDeRegistro; }
+            set { _diaDeRegistro = value; }
         }
 
         private string? _turnoDeRegistro;
@@ -58,6 +58,16 @@ namespace EjercicioObilagotorio3
                 }
             }
         }
+        private void TurnoAleatorio()
+        {
+            int valor = random.Next(0,3);
+            switch (valor)
+            {
+                case 0: TurnoDeRegistro = "mañana"; break;
+                case 1: TurnoDeRegistro = "tarde"; break;
+                case 2: TurnoDeRegistro = "noche"; break;
+            }
+        }
 
         //Constructor
         public RegistroTemperatura(Empleados empleados, int empleadoAnterior)
@@ -65,6 +75,7 @@ namespace EjercicioObilagotorio3
             //aca va todo lo aleatorio
             TemperaturaRegistrada = random.Next(-20, 50);
             PersonaDeTurno = PersonaAleatoria(empleados, empleadoAnterior);
+            TurnoAleatorio();
         }
 
      
